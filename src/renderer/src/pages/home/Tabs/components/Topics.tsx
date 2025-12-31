@@ -39,7 +39,6 @@ import {
   BrushCleaning,
   FolderOpen,
   HelpCircle,
-  MenuIcon,
   NotebookPen,
   PackagePlus,
   PinIcon,
@@ -297,23 +296,23 @@ export const Topics: React.FC<Props> = ({ assistant: _assistant, activeTopic, se
         icon: <BrushCleaning size={14} />,
         onClick: () => onClearMessages(topic)
       },
-      {
-        label: t('settings.topic.position.label'),
-        key: 'topic-position',
-        icon: <MenuIcon size={14} />,
-        children: [
-          {
-            label: t('settings.topic.position.left'),
-            key: 'left',
-            onClick: () => setTopicPosition('left')
-          },
-          {
-            label: t('settings.topic.position.right'),
-            key: 'right',
-            onClick: () => setTopicPosition('right')
-          }
-        ]
-      },
+      // {
+      //   label: t('settings.topic.position.label'),
+      //   key: 'topic-position',
+      //   icon: <MenuIcon size={14} />,
+      //   children: [
+      //     {
+      //       label: t('settings.topic.position.left'),
+      //       key: 'left',
+      //       onClick: () => setTopicPosition('left')
+      //     },
+      //     {
+      //       label: t('settings.topic.position.right'),
+      //       key: 'right',
+      //       onClick: () => setTopicPosition('right')
+      //     }
+      //   ]
+      // },
       {
         label: t('chat.topics.copy.title'),
         key: 'copy',
