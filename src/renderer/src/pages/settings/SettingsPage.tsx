@@ -15,7 +15,6 @@ import {
   NotebookPen,
   Package,
   PictureInPicture2,
-  Server,
   Settings2,
   TextCursorInput,
   Zap
@@ -110,12 +109,12 @@ const SettingsPage: FC = () => {
               {t('memory.title')}
             </MenuItem>
           </MenuItemLink>
-          <MenuItemLink to="/settings/api-server">
+          {/* <MenuItemLink to="/settings/api-server">
             <MenuItem className={isRoute('/settings/api-server')}>
               <Server size={18} />
               {t('apiServer.title')}
             </MenuItem>
-          </MenuItemLink>
+          </MenuItemLink> */}
           <MenuItemLink to="/settings/docprocess">
             <MenuItem className={isRoute('/settings/docprocess')}>
               <FileCode size={18} />
