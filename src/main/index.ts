@@ -23,7 +23,7 @@ import { nodeTraceService } from './services/NodeTraceService'
 import mcpService from './services/MCPService'
 import powerMonitorService from './services/PowerMonitorService'
 import {
-  CHERRY_STUDIO_PROTOCOL,
+  M3AGENT_PROTOCOL,
   handleProtocolUrl,
   registerProtocolClient,
   setupAppImageDeepLink
@@ -210,7 +210,7 @@ if (!app.requestSingleInstanceLock()) {
   })
 
   const handleOpenUrl = (args: string[]) => {
-    const url = args.find((arg) => arg.startsWith(CHERRY_STUDIO_PROTOCOL + '://'))
+    const url = args.find((arg) => arg.startsWith(M3AGENT_PROTOCOL + '://'))
     if (url) handleProtocolUrl(url)
   }
 

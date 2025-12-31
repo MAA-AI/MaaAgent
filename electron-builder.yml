@@ -1,5 +1,5 @@
-appId: com.kangfenmao.CherryStudio
-productName: Cherry Studio
+appId: com.maa-ai.MaaAgent
+productName: Maa Agent
 electronLanguages:
   - zh-CN
   - zh-TW
@@ -14,9 +14,9 @@ directories:
   buildResources: build
 
 protocols:
-  - name: Cherry Studio
+  - name: Maa Agent
     schemes:
-      - cherrystudio
+      - m3agent
 files:
   - "**/*"
   - "!**/{.vscode,.yarn,.yarn-lock,.github,.cursorrules,.prettierrc}"
@@ -73,7 +73,7 @@ extraResources:
     to: "claude-code-plugins"
 
 win:
-  executableName: Cherry Studio
+  executableName: Maa Agent
   artifactName: ${productName}-${version}-${arch}-setup.${ext}
   target:
     - target: nsis
@@ -115,9 +115,9 @@ linux:
   category: Utility
   desktop:
     entry:
-      StartupWMClass: CherryStudio
+      StartupWMClass: Maa Agent
   mimeTypes:
-    - x-scheme-handler/cherrystudio
+    - x-scheme-handler/m3agent
 rpm:
   # Workaround for electron build issue on rpm package:
   # https://github.com/electron/forge/issues/3594
