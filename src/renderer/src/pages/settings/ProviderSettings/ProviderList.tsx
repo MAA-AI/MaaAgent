@@ -1,21 +1,15 @@
 import type { DropResult } from '@hello-pangea/dnd'
 import { loggerService } from '@logger'
-import {
-  DraggableVirtualList,
-  type DraggableVirtualListRef,
-  useDraggableReorder
-} from '@renderer/components/DraggableList'
+import { type DraggableVirtualListRef, useDraggableReorder } from '@renderer/components/DraggableList'
 import { DeleteIcon, EditIcon } from '@renderer/components/Icons'
-import { ProviderAvatar } from '@renderer/components/ProviderAvatar'
 import { useAllProviders, useProviders } from '@renderer/hooks/useProvider'
 import { useTimer } from '@renderer/hooks/useTimer'
 import ImageStorage from '@renderer/services/ImageStorage'
 import type { Provider, ProviderType } from '@renderer/types'
 import { isSystemProvider } from '@renderer/types'
-import { getFancyProviderName, matchKeywordsInModel, matchKeywordsInProvider, uuid } from '@renderer/utils'
+import { matchKeywordsInModel, matchKeywordsInProvider, uuid } from '@renderer/utils'
 import type { MenuProps } from 'antd'
-import { Button, Dropdown, Input, Tag } from 'antd'
-import { GripVertical, PlusIcon, Search, UserPen } from 'lucide-react'
+import { UserPen } from 'lucide-react'
 import type { FC } from 'react'
 import { startTransition, useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -309,7 +303,7 @@ const ProviderList: FC = () => {
 
   return (
     <Container className="selectable">
-      <ProviderListContainer>
+      {/* <ProviderListContainer>
         <AddButtonWrapper>
           <Input
             type="text"
@@ -380,7 +374,7 @@ const ProviderList: FC = () => {
             {t('button.add')}
           </Button>
         </AddButtonWrapper>
-      </ProviderListContainer>
+      </ProviderListContainer> */}
       <ProviderSetting providerId={selectedProvider.id} key={selectedProvider.id} />
     </Container>
   )

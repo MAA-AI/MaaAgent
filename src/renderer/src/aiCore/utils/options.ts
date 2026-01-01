@@ -7,11 +7,7 @@ import { baseProviderIdSchema, customProviderIdSchema } from '@cherrystudio/ai-c
 import { loggerService } from '@logger'
 import {
   getModelSupportedVerbosity,
-  isAnthropicModel,
-  isGeminiModel,
-  isGrokModel,
   isOpenAIModel,
-  isOpenAIOpenWeightModel,
   isQwenMTModel,
   isSupportFlexServiceTierModel,
   isSupportVerbosityModel
@@ -21,26 +17,18 @@ import { getStoreSetting } from '@renderer/hooks/useSettings'
 import { getProviderById } from '@renderer/services/ProviderService'
 import {
   type Assistant,
-  type GroqServiceTier,
-  GroqServiceTiers,
-  type GroqSystemProvider,
-  isGroqServiceTier,
-  isGroqSystemProvider,
   isOpenAIServiceTier,
   isTranslateAssistant,
   type Model,
-  type NotGroqProvider,
   type OpenAIServiceTier,
   OpenAIServiceTiers,
   type Provider,
-  type ServiceTier,
-  SystemProviderIds
+  type ServiceTier
 } from '@renderer/types'
 import { type AiSdkParam, isAiSdkParam, type OpenAIVerbosity } from '@renderer/types/aiCoreTypes'
 import { isSupportServiceTierProvider, isSupportVerbosityProvider } from '@renderer/utils/provider'
 import type { JSONValue } from 'ai'
 import { t } from 'i18next'
-import type { OllamaCompletionProviderOptions } from 'ollama-ai-provider-v2'
 
 import { addAnthropicHeaders } from '../prepareParams/header'
 import { getAiSdkProviderId } from '../provider/factory'
@@ -69,33 +57,14 @@ function toOpenAIServiceTier(model: Model, serviceTier: ServiceTier): OpenAIServ
   }
 }
 
-function toGroqServiceTier(model: Model, serviceTier: ServiceTier): GroqServiceTier {
-  if (
-    !isGroqServiceTier(serviceTier) ||
-    (serviceTier === GroqServiceTiers.flex && !isSupportFlexServiceTierModel(model))
-  ) {
-    return undefined
-  } else {
-    return serviceTier
-  }
-}
-
-function getServiceTier<T extends GroqSystemProvider>(model: Model, provider: T): GroqServiceTier
-function getServiceTier<T extends NotGroqProvider>(model: Model, provider: T): OpenAIServiceTier
-function getServiceTier<T extends Provider>(model: Model, provider: T): OpenAIServiceTier | GroqServiceTier {
+function getServiceTier(model: Model, provider: Provider): OpenAIServiceTier {
   const serviceTierSetting = provider.serviceTier
 
   if (!isSupportServiceTierProvider(provider) || !isOpenAIModel(model) || !serviceTierSetting) {
     return undefined
   }
 
-  // 处理不同供应商需要 fallback 到默认值的情况
-  if (isGroqSystemProvider(provider)) {
-    return toGroqServiceTier(model, serviceTierSetting)
-  } else {
-    // 其他 OpenAI 供应商，假设他们的服务层级设置和 OpenAI 完全相同
-    return toOpenAIServiceTier(model, serviceTierSetting)
-  }
+  return toOpenAIServiceTier(model, serviceTierSetting)
 }
 
 function getVerbosity(model: Model): OpenAIVerbosity {
@@ -244,12 +213,6 @@ export function buildProviderOptions(
         case 'huggingface':
           providerSpecificOptions = buildOpenAIProviderOptions(assistant, model, capabilities, serviceTier)
           break
-        case SystemProviderIds.ollama:
-          providerSpecificOptions = buildOllamaProviderOptions(assistant, model, capabilities)
-          break
-        case SystemProviderIds.gateway:
-          providerSpecificOptions = buildAIGatewayOptions(assistant, model, capabilities, serviceTier, textVerbosity)
-          break
         default:
           // 对于其他 provider，使用通用的构建逻辑
           providerSpecificOptions = buildGenericProviderOptions(rawProviderId, assistant, model, capabilities)
@@ -287,14 +250,11 @@ export function buildProviderOptions(
    * Merge custom parameters into providerSpecificOptions.
    * Simple logic:
    * 1. If key is in actualAiSdkProviderIds → merge directly (user knows the actual AI SDK provider ID)
-   * 2. If key == rawProviderId:
-   *    - If it's gateway/ollama → preserve (they need their own config for routing/options)
-   *    - Otherwise → map to primary (this is a proxy provider like cherryin)
+   * 2. If key == rawProviderId → map to primary (this is a proxy provider like cherryin)
    * 3. Otherwise → treat as regular parameter, merge to primary provider
    *
    * Example:
    * - User writes `cherryin: { opt: 'val' }` → mapped to `google: { opt: 'val' }` (case 2, proxy)
-   * - User writes `gateway: { order: [...] }` → stays as `gateway: { order: [...] }` (case 2, routing config)
    * - User writes `google: { opt: 'val' }` → stays as `google: { opt: 'val' }` (case 1)
    * - User writes `customKey: 'val'` → merged to `google: { customKey: 'val' }` (case 3)
    */
@@ -309,25 +269,13 @@ export function buildProviderOptions(
         }
       }
     } else if (key === rawProviderId && !actualAiSdkProviderIds.includes(rawProviderId)) {
-      // Case 2: Key is the current provider (not in actualAiSdkProviderIds, so it's a proxy or special provider)
-      // Gateway is special: it needs routing config preserved
-      if (key === SystemProviderIds.gateway) {
-        // Preserve gateway config for routing
-        providerSpecificOptions = {
-          ...providerSpecificOptions,
-          [key]: {
-            ...providerSpecificOptions[key],
-            ...providerParams[key]
-          }
-        }
-      } else {
-        // Proxy provider (cherryin, etc.) - map to actual AI SDK provider
-        providerSpecificOptions = {
-          ...providerSpecificOptions,
-          [primaryAiSdkProviderId]: {
-            ...providerSpecificOptions[primaryAiSdkProviderId],
-            ...providerParams[key]
-          }
+      // Case 2: Key is the current provider (not in actualAiSdkProviderIds, so it's a proxy provider)
+      // Proxy provider (cherryin, etc.) - map to actual AI SDK provider
+      providerSpecificOptions = {
+        ...providerSpecificOptions,
+        [primaryAiSdkProviderId]: {
+          ...providerSpecificOptions[primaryAiSdkProviderId],
+          ...providerParams[key]
         }
       }
     } else {
@@ -563,31 +511,6 @@ function buildBedrockProviderOptions(
   }
 }
 
-function buildOllamaProviderOptions(
-  assistant: Assistant,
-  model: Model,
-  capabilities: {
-    enableReasoning: boolean
-    enableWebSearch: boolean
-    enableGenerateImage: boolean
-  }
-): Record<string, OllamaCompletionProviderOptions> {
-  const { enableReasoning } = capabilities
-  const providerOptions: OllamaCompletionProviderOptions = {}
-  const reasoningEffort = assistant.settings?.reasoning_effort
-  if (enableReasoning) {
-    if (isOpenAIOpenWeightModel(model)) {
-      // @ts-ignore upstream type error
-      providerOptions.think = reasoningEffort as any
-    } else {
-      providerOptions.think = !['none', undefined].includes(reasoningEffort)
-    }
-  }
-  return {
-    ollama: providerOptions
-  }
-}
-
 /**
  * 构建通用的 providerOptions（用于其他 provider）
  */
@@ -637,35 +560,5 @@ function buildGenericProviderOptions(
 
   return {
     [providerId]: providerOptions
-  }
-}
-
-function buildAIGatewayOptions(
-  assistant: Assistant,
-  model: Model,
-  capabilities: {
-    enableReasoning: boolean
-    enableWebSearch: boolean
-    enableGenerateImage: boolean
-  },
-  serviceTier: OpenAIServiceTier,
-  textVerbosity?: OpenAIVerbosity
-): Record<
-  string,
-  | OpenAIResponsesProviderOptions
-  | AnthropicProviderOptions
-  | GoogleGenerativeAIProviderOptions
-  | Record<string, unknown>
-> {
-  if (isAnthropicModel(model)) {
-    return buildAnthropicProviderOptions(assistant, model, capabilities)
-  } else if (isOpenAIModel(model)) {
-    return buildOpenAIProviderOptions(assistant, model, capabilities, serviceTier, textVerbosity)
-  } else if (isGeminiModel(model)) {
-    return buildGeminiProviderOptions(assistant, model, capabilities)
-  } else if (isGrokModel(model)) {
-    return buildXAIProviderOptions(assistant, model, capabilities)
-  } else {
-    return buildGenericProviderOptions('openai-compatible', assistant, model, capabilities)
   }
 }

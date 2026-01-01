@@ -46,7 +46,7 @@ import {
   setThoughtAutoCollapse
 } from '@renderer/store/settings'
 import type { Assistant, CodeStyleVarious, MathEngine } from '@renderer/types'
-import { isGroqSystemProvider, ThemeMode } from '@renderer/types'
+import { ThemeMode } from '@renderer/types'
 import { getSendMessageShortcutLabel } from '@renderer/utils/input'
 import {
   isOpenAICompatibleProvider,
@@ -59,7 +59,6 @@ import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
-import GroqSettingsGroup from './components/GroqSettingsGroup'
 import OpenAISettingsGroup from './components/OpenAISettingsGroup'
 
 interface Props {
@@ -162,9 +161,9 @@ const SettingsTab: FC<Props> = (props) => {
               SettingRowTitleSmall={SettingRowTitleSmall}
             />
           )}
-          {isGroqSystemProvider(provider) && (
+          {/* {isGroqSystemProvider(provider) && (
             <GroqSettingsGroup SettingGroup={SettingGroup} SettingRowTitleSmall={SettingRowTitleSmall} />
-          )}
+          )} */}
         </>
       )}
       <CollapsibleSettingGroup title={t('settings.messages.title')} defaultExpanded={true}>

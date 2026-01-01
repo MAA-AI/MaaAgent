@@ -16,8 +16,7 @@ import { checkApi } from '@renderer/services/ApiService'
 import { isProviderSupportAuth } from '@renderer/services/ProviderService'
 import { useAppDispatch } from '@renderer/store'
 import { updateWebSearchProvider } from '@renderer/store/websearch'
-import type { SystemProviderId } from '@renderer/types'
-import { isSystemProvider, isSystemProviderId, SystemProviderIds } from '@renderer/types'
+import { isSystemProviderId, SystemProviderIds } from '@renderer/types'
 import type { ApiKeyConnectivity } from '@renderer/types/healthCheck'
 import { HealthStatus } from '@renderer/types/healthCheck'
 import { formatApiHost, formatApiKeys, getFancyProviderName, validateApiHost } from '@renderer/utils'
@@ -33,24 +32,15 @@ import {
   isOpenAIProvider,
   isVertexProvider
 } from '@renderer/utils/provider'
-import { Button, Divider, Flex, Input, Select, Space, Switch, Tooltip } from 'antd'
-import Link from 'antd/es/typography/Link'
+import { Button, Input, Select, Space, Tooltip } from 'antd'
 import { debounce, isEmpty } from 'lodash'
-import { Bolt, Check, Settings2, SquareArrowOutUpRight, TriangleAlert } from 'lucide-react'
+import { Check, Settings2, TriangleAlert } from 'lucide-react'
 import type { FC } from 'react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 
-import {
-  SettingContainer,
-  SettingHelpLink,
-  SettingHelpText,
-  SettingHelpTextRow,
-  SettingSubtitle,
-  SettingTitle
-} from '..'
-import ApiOptionsSettingsPopup from './ApiOptionsSettings/ApiOptionsSettingsPopup'
+import { SettingContainer, SettingHelpLink, SettingHelpText, SettingHelpTextRow, SettingSubtitle } from '..'
 import AwsBedrockSettings from './AwsBedrockSettings'
 import CherryINSettings from './CherryINSettings'
 import CustomHeaderPopup from './CustomHeaderPopup'
@@ -68,19 +58,19 @@ interface Props {
 }
 
 const ANTHROPIC_COMPATIBLE_PROVIDER_IDS = [
-  SystemProviderIds.deepseek,
-  SystemProviderIds.moonshot,
-  SystemProviderIds.zhipu,
-  SystemProviderIds.dashscope,
-  SystemProviderIds.modelscope,
-  SystemProviderIds.aihubmix,
-  SystemProviderIds.grok,
-  SystemProviderIds.cherryin,
-  SystemProviderIds.longcat,
-  SystemProviderIds.minimax,
-  SystemProviderIds.silicon,
-  SystemProviderIds.qiniu,
-  SystemProviderIds.dmxapi
+  // SystemProviderIds.deepseek,
+  // SystemProviderIds.moonshot,
+  // SystemProviderIds.zhipu,
+  // SystemProviderIds.dashscope,
+  // SystemProviderIds.modelscope,
+  // SystemProviderIds.aihubmix,
+  // SystemProviderIds.grok,
+  SystemProviderIds['maa-ai']
+  // SystemProviderIds.longcat,
+  // SystemProviderIds.minimax,
+  // SystemProviderIds.silicon,
+  // SystemProviderIds.qiniu,
+  // SystemProviderIds.dmxapi
 ] as const
 type AnthropicCompatibleProviderId = (typeof ANTHROPIC_COMPATIBLE_PROVIDER_IDS)[number]
 
@@ -108,10 +98,10 @@ const ProviderSetting: FC<Props> = ({ providerId }) => {
   const isDmxapi = provider.id === 'dmxapi'
   const isCherryIN = provider.id === 'cherryin'
   const isChineseUser = i18n.language.startsWith('zh')
-  const noAPIInputProviders = ['aws-bedrock'] as const satisfies SystemProviderId[]
-  const hideApiInput = noAPIInputProviders.some((id) => id === provider.id)
-  const noAPIKeyInputProviders = ['copilot', 'vertexai'] as const satisfies SystemProviderId[]
-  const hideApiKeyInput = noAPIKeyInputProviders.some((id) => id === provider.id)
+  // const noAPIInputProviders = ['aws-bedrock'] as const satisfies SystemProviderId[]
+  // const hideApiInput = noAPIInputProviders.some((id) => id === provider.id)
+  // const noAPIKeyInputProviders = ['copilot', 'vertexai'] as const satisfies SystemProviderId[]
+  // const hideApiKeyInput = noAPIKeyInputProviders.some((id) => id === provider.id)
 
   const providerConfig = PROVIDER_URLS[provider.id]
   const officialWebsite = providerConfig?.websites?.official
@@ -386,7 +376,7 @@ const ProviderSetting: FC<Props> = ({ providerId }) => {
 
   return (
     <SettingContainer theme={theme} style={{ background: 'var(--color-background)' }}>
-      <SettingTitle>
+      {/* <SettingTitle>
         <Flex align="center" gap={8}>
           <ProviderName>{fancyProviderName}</ProviderName>
           {officialWebsite && (
@@ -415,8 +405,8 @@ const ProviderSetting: FC<Props> = ({ providerId }) => {
             }
           }}
         />
-      </SettingTitle>
-      <Divider style={{ width: '100%', margin: '10px 0' }} />
+      </SettingTitle> */}
+      {/* <Divider style={{ width: '100%', margin: '10px 0' }} /> */}
       {isProviderSupportAuth(provider) && <ProviderOAuth providerId={provider.id} />}
       {provider.id === 'openai' && <OpenAIAlert />}
       {provider.id === 'ovms' && <OVMSSettings />}
@@ -436,9 +426,9 @@ const ProviderSetting: FC<Props> = ({ providerId }) => {
           {provider.authType === 'oauth' && <AnthropicSettings />}
         </>
       )}
-      {!hideApiInput && !isAnthropicOAuth() && (
+      {!isAnthropicOAuth() && (
         <>
-          {!hideApiKeyInput && (
+          {
             <>
               <SettingSubtitle
                 style={{
@@ -489,7 +479,7 @@ const ProviderSetting: FC<Props> = ({ providerId }) => {
                 <SettingHelpText>{t('settings.provider.api_key.tip')}</SettingHelpText>
               </SettingHelpTextRow>
             </>
-          )}
+          }
           {!isDmxapi && (
             <>
               <SettingSubtitle style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
