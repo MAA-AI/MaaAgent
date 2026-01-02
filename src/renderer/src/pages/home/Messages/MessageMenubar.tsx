@@ -312,6 +312,15 @@ const MessageMenubar: FC<Props> = (props) => {
             onClick: () => {
               SaveToKnowledgePopup.showForMessage(message)
             }
+          },
+          {
+            label: t('notes.save'),
+            key: 'note',
+            onClick: async () => {
+              const title = await getMessageTitle(message)
+              const markdown = messageToMarkdown(message)
+              exportMessageToNotes(title, markdown, notesPath)
+            }
           }
         ]
       },
