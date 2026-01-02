@@ -26,12 +26,12 @@ export const DEFAULT_MESSAGE_MENUBAR_BUTTON_IDS: MessageMenubarButtonId[] = [
   'user-regenerate',
   'user-edit',
   'copy',
-  'assistant-regenerate',
+  // 'assistant-regenerate',
   // 'assistant-mention-model',
   // 'translate',
   'useful',
-  'notes',
-  'delete',
+  // 'notes',
+  // 'delete',
   'trace',
   'more-menu'
 ]
