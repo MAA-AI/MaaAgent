@@ -56,7 +56,6 @@ import {
   Menu,
   NotebookPen,
   Save,
-  Split,
   ThumbsUp,
   Upload
 } from 'lucide-react'
@@ -279,12 +278,12 @@ const MessageMenubar: FC<Props> = (props) => {
             }
           ]
         : []),
-      {
-        label: t('chat.message.new.branch.label'),
-        key: 'new-branch',
-        icon: <Split size={15} />,
-        onClick: onNewBranch
-      },
+      // {
+      //   label: t('chat.message.new.branch.label'),
+      //   key: 'new-branch',
+      //   icon: <Split size={15} />,
+      //   onClick: onNewBranch
+      // },
       {
         label: t('chat.multiple.select.label'),
         key: 'multi-select',
