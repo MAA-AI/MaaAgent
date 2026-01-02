@@ -1,4 +1,3 @@
-import { PlusOutlined } from '@ant-design/icons'
 import { loggerService } from '@logger'
 import { Sortable, useDndReorder } from '@renderer/components/dnd'
 import HorizontalScrollContainer from '@renderer/components/HorizontalScrollContainer'
@@ -15,7 +14,6 @@ import type { Tab } from '@renderer/store/tabs'
 import { addTab, removeTab, setActiveTab, setTabs } from '@renderer/store/tabs'
 import type { MinAppType } from '@renderer/types'
 import { ThemeMode } from '@renderer/types'
-import { classNames } from '@renderer/utils'
 import { Tooltip } from 'antd'
 import type { LRUCache } from 'lru-cache'
 import {
@@ -267,9 +265,9 @@ const TabsContainer: React.FC<TabsContainerProps> = ({ children }) => {
               </Tab>
             )}
           />
-          <AddTabButton onClick={handleAddTab} className={classNames({ active: activeTabId === 'launchpad' })}>
+          {/* <AddTabButton onClick={handleAddTab} className={classNames({ active: activeTabId === 'launchpad' })}>
             <PlusOutlined />
-          </AddTabButton>
+          </AddTabButton> */}
         </HorizontalScrollContainer>
         <RightButtonsContainer>
           <Tooltip
