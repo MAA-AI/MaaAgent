@@ -3898,7 +3898,8 @@
         "memory": "Persistent memory implementation based on a local knowledge graph. This enables the model to remember user-related information across different conversations. Requires configuring the MEMORY_FILE_PATH environment variable.",
         "no": "No description",
         "python": "Execute Python code in a secure sandbox environment. Run Python with Pyodide, supporting most standard libraries and scientific computing packages",
-        "sequentialthinking": "A MCP server implementation that provides tools for dynamic and reflective problem solving through structured thinking processes"
+        "sequentialthinking": "A MCP server implementation that provides tools for dynamic and reflective problem solving through structured thinking processes",
+        "vision_analyzer": "Analyze images using vision-capable LLM with session-based follow-up questions. Uses the maa-ai provider's API key directly"
       },
       "command": "Command",
       "config_description": "Configure Model Context Protocol servers",

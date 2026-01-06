@@ -174,6 +174,20 @@ export const builtinMCPServers: BuiltinMCPServer[] = [
     provider: 'CherryAI',
     installSource: 'builtin',
     isTrusted: true
+  },
+  {
+    id: nanoid(),
+    name: BuiltinMCPServerNames.visionAnalyzer,
+    type: 'inMemory',
+    isActive: true,
+    env: {
+      VISION_MODEL_NAME: 'gemini-3-flash-preview'
+    },
+    provider: 'MaaAI',
+    installSource: 'builtin',
+    isTrusted: true,
+    // 图像分析可能需要较长时间，启用长时间运行模式
+    longRunning: true
   }
 ] as const
 

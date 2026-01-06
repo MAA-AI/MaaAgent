@@ -3898,7 +3898,8 @@
         "memory": "基於本機知識圖譜的持久性記憶基礎實做。這使得模型能夠在不同對話間記住使用者的相關資訊。需要設定 MEMORY_FILE_PATH 環境變數。",
         "no": "無描述",
         "python": "在安全的沙盒環境中執行 Python 程式碼。使用 Pyodide 執行 Python，支援大多數標準函式庫和科學計算套件",
-        "sequentialthinking": "一個 MCP 伺服器實做，提供了透過結構化思維過程進行動態和反思性問題解決的工具"
+        "sequentialthinking": "一個 MCP 伺服器實做，提供了透過結構化思維過程進行動態和反思性問題解決的工具",
+        "vision_analyzer": "利用具有視覺能力的 LLM 分析圖像，支援基於會話的連續追問。直接使用 maa-ai 提供商的 API 金鑰"
       },
       "command": "指令",
       "config_description": "設定模型上下文協議伺服器",

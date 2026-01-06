@@ -11,6 +11,7 @@ import FileSystemServer from './filesystem'
 import MemoryServer from './memory'
 import PythonServer from './python'
 import ThinkingServer from './sequentialthinking'
+import VisionAnalyzerServer from './vision-analyzer'
 
 const logger = loggerService.withContext('MCPFactory')
 
@@ -47,6 +48,10 @@ export function createInMemoryMCPServer(
     case BuiltinMCPServerNames.didiMCP: {
       const apiKey = envs.DIDI_API_KEY
       return new DiDiMcpServer(apiKey).server
+    }
+    case BuiltinMCPServerNames.visionAnalyzer: {
+      const modelName = envs.VISION_MODEL_NAME
+      return new VisionAnalyzerServer({ modelName }).server
     }
     default:
       throw new Error(`Unknown in-memory MCP server: ${name}`)
