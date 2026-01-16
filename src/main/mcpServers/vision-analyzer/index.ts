@@ -613,7 +613,7 @@ class VisionAnalyzerServer {
    * 调用 LLM 获取响应 (使用 OpenAI Responses API 或 Gemini API)
    * @param messages - 消息数组
    * @param temperature - 温度参数，控制输出的随机性 (0-1)，默认为 0
-   * @param useJsonSchema - 是否使用 JSON schema 限制输出 (仅 Gemini 支持)，默认为 false
+   * @param useJsonSchema - 是否使用 JSON schema 限制输出格式，默认为 false
    */
   private async callLLM(
     messages: SessionMessage[],
@@ -627,14 +627,21 @@ class VisionAnalyzerServer {
     if (isGemini) {
       return await this.callGeminiLLM(messages, temperature, useJsonSchema)
     } else {
-      return await this.callOpenAILLM(messages, temperature)
+      return await this.callOpenAILLM(messages, temperature, useJsonSchema)
     }
   }
 
   /**
    * 调用 OpenAI LLM 获取响应
+   * @param messages - 消息数组
+   * @param temperature - 温度参数，控制输出的随机性 (0-1)，默认为 0
+   * @param useJsonSchema - 是否使用 JSON schema 限制输出格式，默认为 false
    */
-  private async callOpenAILLM(messages: SessionMessage[], temperature: number = 0): Promise<string> {
+  private async callOpenAILLM(
+    messages: SessionMessage[],
+    temperature: number = 0,
+    useJsonSchema: boolean = false
+  ): Promise<string> {
     logger.info('[LLM] Using OpenAI client...')
 
     if (!this.openaiClient) {
@@ -707,18 +714,36 @@ class VisionAnalyzerServer {
         }
       })
 
-      logger.info('[LLM] Sending request to Responses API:', {
-        model: this.modelName,
-        inputItemCount: input.length,
-        fullUrl: `${this.openaiClient.baseURL}/responses`
-      })
-
-      // 使用 Responses API
-      const response = await this.openaiClient.responses.create({
+      // 构建请求参数
+      const requestParams: any = {
         model: this.modelName,
         input: input,
         temperature: temperature
+      }
+
+      // 如果需要使用 JSON schema 限制输出格式
+      if (useJsonSchema) {
+        logger.info('[LLM] Using JSON schema for structured output')
+        requestParams.text = {
+          format: {
+            type: 'json_schema',
+            name: 'coordinate_extraction',
+            description: 'Extract visual coordinates from image',
+            schema: zodToJsonSchema(CoordinateExtractionSchema as any),
+            strict: true
+          }
+        }
+      }
+
+      logger.info('[LLM] Sending request to Responses API:', {
+        model: this.modelName,
+        inputItemCount: input.length,
+        fullUrl: `${this.openaiClient.baseURL}/responses`,
+        useJsonSchema
       })
+
+      // 使用 Responses API
+      const response = await this.openaiClient.responses.create(requestParams)
 
       logger.info('[LLM] Response received:', {
         hasOutput: !!response.output,
