@@ -304,7 +304,7 @@ class VisionAnalyzerServer {
           'Extract target bounding boxes from an image. ' +
           'Output is XML with `<image_width>`/`<image_height>` (pixels, -1 if unknown) and `<results>` containing `<result>` items. ' +
           'Each `<result>` includes `<target>`, `<status>` (found/missing), `<count>`, and `<boxes>` with `<box>` entries. ' +
-          'Each `<box>` provides `<output_xywh>` (pixel coordinates [x, y, w, h]) ready for UI clicks/cropping. ' +
+          'Each `<box>` provides `<xywh>` (pixel coordinates [x, y, w, h]) ready for UI clicks/cropping. ' +
           'Required parameters: `image_path` (absolute local image path), `target_name` (what to locate). ' +
           'Optional: `hint` (extra constraints like color/shape/nearby text).',
         inputSchema: {
@@ -572,14 +572,7 @@ class VisionAnalyzerServer {
       })
 
       const boxesXml = convertedBoxes
-        .map(
-          (box, idx) =>
-            `    <box index="${idx}">\n` +
-            `      <input_ymin_xmin_ymax_xmax>${box.input}</input_ymin_xmin_ymax_xmax>\n` +
-            `      <detected_scale>${box.detectedScale}</detected_scale>\n` +
-            `      <output_xywh>${box.output}</output_xywh>\n` +
-            `    </box>`
-        )
+        .map((box, idx) => `    <box index="${idx}">\n` + `      <xywh>${box.output}</xywh>\n` + `    </box>`)
         .join('\n')
 
       return (
