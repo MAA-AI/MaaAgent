@@ -10344,6 +10344,7 @@ __metadata:
     youtubei.js: "npm:^15.0.1"
     zipread: "npm:^1.3.3"
     zod: "npm:^4.1.5"
+    zod-to-json-schema: "npm:^3.25.1"
   languageName: unknown
   linkType: soft
 
@@ -26462,6 +26463,15 @@ __metadata:
   peerDependencies:
     zod: ^3.25 || ^4
   checksum: 10c0/2d2cf6ca49752bf3dc5fb37bc8f275eddbbc4020e7958d9c198ea88cd197a5f527459118188a0081b889da6a6474d64c4134cd60951fa70178c125138761c680
+  languageName: node
+  linkType: hard
+
+"zod-to-json-schema@npm:^3.25.1":
+  version: 3.25.1
+  resolution: "zod-to-json-schema@npm:3.25.1"
+  peerDependencies:
+    zod: ^3.25 || ^4
+  checksum: 10c0/711b30e34d1f1211f1afe64bf457f0d799234199dc005cca720b236ea808804c03164039c232f5df33c46f462023874015a8a0b3aab1585eca14124c324db7e2
   languageName: node
   linkType: hard
 
