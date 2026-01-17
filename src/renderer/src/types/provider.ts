@@ -141,7 +141,7 @@ export const SystemProviderIds = {
   'maa-ai': 'maa-ai'
 } as const satisfies Record<SystemProviderId, SystemProviderId>
 
-type SystemProviderIdTypeMap = typeof SystemProviderIds
+// type SystemProviderIdTypeMap = typeof SystemProviderIds
 
 export type SystemProvider = Provider & {
   id: SystemProviderId
